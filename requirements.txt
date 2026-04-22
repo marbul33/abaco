@@ -1,0 +1,13 @@
+# Abaco no requiere instalación de paquetes externos.
+# Usa únicamente la biblioteca estándar de Python 3.10+
+#
+# Dependencias de stdlib utilizadas:
+#   - tkinter    (interfaz gráfica)
+#   - sqlite3    (base de datos local)
+#   - csv        (exportación de datos)
+#   - socket     (bloqueo de instancia única)
+#   - datetime   (marcas de tiempo y snapshots)
+#
+# Para compilar a .exe en Windows:
+#   pip install pyinstaller
+#   pyinstaller --onefile --windowed --add-data "img/logo.png;img" src/ui.py

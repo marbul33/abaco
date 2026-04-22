@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# PyInstaller — el .exe compilado no va al repo
+dist/
+build/
+*.spec
+
+# BASE DE DATOS — NUNCA subir datos reales de clientes
+*.db
+*.sqlite
+*.sqlite3
+Abacus_Data/
+
+# IDEs
+.vscode/
+.idea/
+
+# Sistema operativo Windows
+Thumbs.db
+desktop.ini
+
+# Entorno virtual — NUNCA subir al repo
+venv/
+.venv/
+env/
+ENV/
