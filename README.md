@@ -85,4 +85,4 @@ No se requiere ningún `pip install`.
 ---
 
 *Proyecto personal desarrollado para uso formativo y académico. Todos los datos son
-fictíceos y simulados. En ningún caso se han usado datos reales.*
+fictícios y simulados. En ningún caso se han usado datos reales.*
