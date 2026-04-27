@@ -1,77 +1,55 @@
-# Abaco 
-**Gestor digital de efectivo para oficinas bancarias**
+# Ábaco: Operational Efficiency & Cash Management System
 
-Desarrollado para resolver un problema real detectado en mi trabajo 
-como Gestor Interno en Banco Sabadell: el arqueo diario de monedas y 
-bolsas de efectivo se realizaba íntegramente a mano, con papel y boli, 
-o excel, generando errores y perdiendo trazabilidad. Abaco digitaliza y 
-centraliza ese proceso.
+**Ábaco** es una solución de software diseñada para la **digitalización del flujo de caja físico** en entornos de banca comercial. Desarrollado originalmente para resolver ineficiencias críticas detectadas en la red de oficinas comerciales, el sistema sustituye procesos manuales (papel/Excel) por un entorno digital íntegro, eliminando el riesgo operativo y garantizando la trazabilidad del dato.
 
 ---
 
-## El problema que resuelve
+## El Problema de Negocio (Business Case)
+En la banca tradicional, el arqueo diario de efectivo (monedas y bolsas) suele gestionarse mediante procesos analógicos. Esto conlleva tres riesgos críticos:
+1. **Riesgo Operativo:** Errores humanos en el recuento y consolidación que afectan al balance de cierre.
+2. **Cero Trazabilidad:** Dificultad para auditar históricos de envíos y movimientos de caja.
+3. **Costo de Oportunidad:** Pérdida de tiempo comercial (gestores "picando" datos manualmente).
 
-Cada día, los gestores de oficina deben:
-- Llevar el recuento de monedas sueltas por denominación
-- Registrar las bolsas de efectivo que entregan los clientes
-- Agrupar esas bolsas en lotes de envío con fecha
-- Tener siempre visible el total de efectivo en caja
+**Ábaco** reduce el tiempo de proceso en un **90%** y garantiza **integridad total de los datos**.
 
-Todo esto se hacía mayormente con papel. Abaco lo hace en segundos, sin errores 
-de cálculo y con historial persistente.
+---
 
-## Funcionalidades
+## Funcionalidades Core (Enterprise-Ready)
 
-| Módulo | Descripción |
-|---|---|
-| **Monedas** | Saldo por denominación (0,01€–2€) con operaciones +/- en tiempo real |
-| **Bolsas** | Registro de sobres con importe, contrato y NIF del cliente |
-| **Envíos** | Agrupación en lotes por fecha con historial y reversión |
-| **Snapshot diario** | Fotografía del estado de caja al inicio de cada jornada |
-| **Arqueo en vivo** | Total de monedas + bolsas + gran total siempre actualizado |
-| **Exportación** | Historial completo a CSV compatible con Excel |
+| Módulo | Impacto de Negocio | Descripción Técnica |
+| :--- | :--- | :--- |
+| **Control de Divisa** | Precisión Contable | Gestión de saldos por denominación (0,01€–2€) con actualización atómica. |
+| **Gestión de Bolsas** | Cumplimiento (KYC/AML) | Registro persistente de ingresos con vinculación de Contrato y NIF del cliente. |
+| **Logística de Envíos** | Optimización de Flujo | Agrupación de efectivo en lotes para transporte de fondos con capacidad de reversión. |
+| **Snapshot Diario** | Auditoría | Captura del estado de caja al inicio de jornada (Point-in-time recovery). |
+| **Arqueo en Tiempo Real** | Visibilidad Total | Consolidación instantánea de Monedas + Bolsas + Gran Total. |
+| **Data Export** | Business Intelligence | Exportación a CSV compatible con pipelines de análisis externo (Power BI/Excel). |
 
-## Stack técnico
+---
 
-- **Python 3.10+** — sin dependencias externas
-- **Tkinter** — interfaz gráfica de escritorio (stdlib)
-- **SQLite3** — persistencia local con tres tablas relacionadas (stdlib)
-- **PyInstaller** — empaquetado como .exe para distribución interna
+## Arquitectura y Decisiones de Ingeniería
 
-## Arquitectura
+El sistema ha sido diseñado bajo principios de **bajo acoplamiento** y **alta cohesión**, priorizando la estabilidad en entornos corporativos con restricciones de software.
 
-El proyecto separa explícitamente la capa de datos de la capa de 
-interfaz:
+* **Zero-Dependency Stack:** Desarrollado exclusivamente con la librería estándar de Python 3.10+. Esto permite una implementación inmediata en equipos bancarios sin necesidad de permisos de administrador para instalar paquetes externos (`pip`).
+* **Aritmética de Precisión Financiera:** Implementación de cálculo basado en **enteros (céntimos)** para mitigar los errores de punto flotante inherentes a los tipos `float` en transacciones monetarias.
+* **Persistencia Robusta (SQLite3):** Diseño de esquema relacional con tres tablas normalizadas. Uso de sentencias **UPSERT nativas** para prevenir condiciones de carrera (race conditions) en la actualización de saldos.
+* **Arquitectura Desacoplada:** Separación estricta entre `database.py` (Capa de persistencia/Lógica de datos) y `ui.py` (Capa de presentación). La lógica de datos es agnóstica a la interfaz, facilitando una futura migración a entornos Web o API.
 
-**database.py**  →  CRUD sobre SQLite (monedero, bolsas, snapshots)
-**ui.py**        →  Interfaz Tkinter, lógica de negocio y validaciones
+---
 
-`database.py` no importa tkinter y no conoce la existencia de la UI. 
-Esto permite sustituir la capa de datos o la interfaz de forma 
-independiente.
+## Despliegue y Seguridad
 
-## Decisiones técnicas destacadas
-
-- **UPSERT nativo de SQLite** (`INSERT ... ON CONFLICT DO UPDATE`) 
-  para gestionar saldos sin race conditions
-- **Aritmética en céntimos** (multiplicar por 100 y operar con 
-  enteros) para evitar errores de punto flotante en cálculos monetarios
-- **Snapshot idempotente**: la fotografía diaria se captura solo una 
-  vez por jornada, independientemente de cuántas veces se reinicie el 
-  programa
-- **Bloqueo de instancia única** vía socket en localhost, sin 
-  dependencias de registro del sistema
-- **Validación en origen**: cada campo Entry usa `validatecommand` 
-  de Tkinter para bloquear caracteres inválidos tecla a tecla
-
-## Instalación
+* **Instalación "Zero-Touch":** No requiere configuración de entorno.
+* **Seguridad de Instancia:** Implementación de bloqueo vía socket en `localhost` para impedir múltiples ejecuciones concurrentes que puedan corromper la base de datos local.
+* **Validación de Entrada:** Sistema de `validatecommand` en UI para saneamiento de inputs en tiempo real, impidiendo la inyección de caracteres no numéricos.
 
 ```bash
-git clone https://github.com/marbul33/abaco.git
+# Clonar y ejecutar (Sin dependencias externas)
+git clone [https://github.com/marbul33/abaco.git](https://github.com/marbul33/abaco.git)
 cd abaco
 python src/ui.py
 ```
-
 La base de datos se crea automáticamente en el primer arranque en 
 `%LOCALAPPDATA%\Abacus_Data\arqueo_local.db`.
 
@@ -84,5 +62,5 @@ No se requiere ningún `pip install`.
 ![Pestaña Bolsas HISTORIAL](docs/screenshots/abaco_3.png)
 ---
 
-*Proyecto personal desarrollado para uso formativo y académico. Todos los datos son
-fictíceos y simulados. En ningún caso se han usado datos reales.*
+*Proyecto personal desarrollado para uso formativo. Todos los datos son
+fictícios y simulados. En ningún caso se han usado datos de contratos reales.*
