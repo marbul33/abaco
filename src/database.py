@@ -5,13 +5,11 @@ from datetime import datetime
 
 # =============================================================================
 #  SECCIÓN 1 — INICIALIZACIÓN
-#  Creación de todas las tablas de la base de datos si no existen.
-#  Estas funciones se llaman una sola vez al arrancar la aplicación.
 # =============================================================================
 
 def ruta_bd():
     """Genera una ruta persistente y semi-oculta en AppData para la base de datos."""
-    # Esto apunta a C:\Users\TuUsuario\AppData\Local\Abacus_Data
+    # Esto apunta a C:\Users\[USER]\AppData\Local\Abacus_Data
     carpeta_appdata = os.path.join(os.getenv('LOCALAPPDATA'), 'Abacus_Data')
     os.makedirs(carpeta_appdata, exist_ok=True)
     return os.path.join(carpeta_appdata, 'arqueo_local.db')
@@ -72,8 +70,6 @@ def inicializar_snapshot_table():
 
 # =============================================================================
 #  SECCIÓN 2 — MONEDERO
-#  Operaciones CRUD sobre la tabla 'monedero'.
-#  Cada denominación tiene exactamente una fila; los saldos nunca se duplican.
 # =============================================================================
 
 def modificar_monedero(denominacion, variacion):
@@ -134,7 +130,6 @@ def obtener_todos_los_saldos():
 
 # =============================================================================
 #  SECCIÓN 3 — BOLSAS
-#  Operaciones CRUD sobre la tabla 'bolsas'.
 #  Una bolsa puede estar en uno de dos estados: 'IN-CAJA FUERTE' o 'ENVIADA'.
 #  El flujo normal es: registro → envío (agrupado en lote) → [reversión opcional]
 # =============================================================================
@@ -236,8 +231,6 @@ def revertir_envio_bolsa(id_bolsa):
 
 # =============================================================================
 #  SECCIÓN 4 — HISTORIAL DE LOTES
-#  Consultas de solo lectura para el modo maestro-detalle del historial de envíos.
-#  No modifican datos; solo proyectan vistas agregadas sobre la tabla 'bolsas'.
 # =============================================================================
 
 def obtener_lotes_enviados():
@@ -286,8 +279,6 @@ def obtener_bolsas_por_lote(nombre_lote):
 
 # =============================================================================
 #  SECCIÓN 5 — ARQUEO
-#  Cálculo compuesto de totales para la barra inferior de la UI.
-#  Agrega datos de las tablas 'monedero' y 'bolsas' en una sola consulta.
 # =============================================================================
 
 def obtener_datos_arqueo():
@@ -296,11 +287,6 @@ def obtener_datos_arqueo():
       · desglose_monedas — lista de (denominacion, cantidad_total) del monedero
       · total_bolsas     — suma de importes de bolsas 'IN-CAJA FUERTE'
       · gran_total       — suma de ambos conceptos
-
-    Nota: la UI actualmente solo consume 'total_bolsas' de esta tupla y calcula
-    su propio total de monedas desde el estado en memoria (variables_saldos).
-    El resto de la tupla está disponible para posibles extensiones futuras
-    (informes, auditorías, etc.).
     """
     conexion = sqlite3.connect(ruta_bd())
     cursor   = conexion.cursor()
@@ -321,8 +307,6 @@ def obtener_datos_arqueo():
 
 # =============================================================================
 #  SECCIÓN 6 — SNAPSHOT DIARIO
-#  Fotografía de los saldos del monedero al inicio de cada jornada.
-#  Permite consultar con qué valores arrancó el día sin alterar los saldos vivos.
 # =============================================================================
 
 def capturar_snapshot_diario():
@@ -382,8 +366,6 @@ def obtener_snapshot_hoy():
 
 # =============================================================================
 #  ARRANQUE DIRECTO
-#  Si se ejecuta este archivo directamente (fuera de la UI), inicializa
-#  la base de datos para dejarla lista para operar.
 # =============================================================================
 
 if __name__ == '__main__':

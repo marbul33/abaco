@@ -12,8 +12,7 @@ import socket
 
 # =============================================================================
 #  SECCIÓN 1 — ESTADO GLOBAL
-#  Variables compartidas por toda la aplicación. Se inicializan aquí y se
-#  modifican a lo largo del ciclo de vida de la ventana.
+#  Variables compartidas por toda la aplicación. 
 # =============================================================================
 
 # Denominaciones de moneda 
@@ -47,7 +46,6 @@ def ruta_recurso(relativa):
     """
     Resuelve la ruta a un archivo tanto en desarrollo como dentro del .exe.
     PyInstaller extrae los recursos a una carpeta temporal (_MEIPASS) al ejecutar.
-    Sin esto, '.ico' no se encontraría y la app crashearía al arrancar.
     """
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relativa)
@@ -143,7 +141,6 @@ def popup_silencioso_askokcancel(titulo, mensaje, parent):
 def popup_silencioso_mensaje(titulo, mensaje, parent, es_error=False):
     """
     Diálogo informativo de un solo botón ("Entendido").
-    Color del botón: rojo para errores, verde para confirmaciones.
     """
     pop = tk.Toplevel(parent)
     pop.withdraw()
@@ -267,7 +264,7 @@ def popup_silencioso_logs_diarios(parent):
 # =============================================================================
 
 def validar_max_18_caracteres(texto_propuesto):
-    """Permite cualquier carácter, pero con un límite máximo de 20."""
+    """Permite cualquier carácter, pero con un límite máximo de 18."""
     return len(texto_propuesto) <= 18
 
 
@@ -548,9 +545,8 @@ def alternar_modo_edicion():
                 hay_errores = True
 
         if hay_errores:
-            return  # No salir del modo edición mientras haya errores
-
-        # Si no hubo ningún cambio real, salir silenciosamente
+            return  
+        
         sin_cambios = all(nuevos_valores[den] == variables_saldos[den] for den in DENOMINACIONES)
         if sin_cambios:
             for den in DENOMINACIONES:
@@ -570,7 +566,7 @@ def alternar_modo_edicion():
 
         # Confirmar antes de sobrescribir
         if not popup_silencioso_askokcancel("Confirmar Totales", "¿Quieres cambiar los totales?", ventana):
-            resetear_pestana_monedas() # Cerramos el modo edición y restauramos la vista
+            resetear_pestana_monedas()
             return
 
         # Persistir y actualizar la interfaz
@@ -639,7 +635,6 @@ def accion_registrar_bolsa():
     caja_bolsa_importe.config(bg="white",  highlightbackground="#cccccc", highlightcolor="#066dff")
     caja_bolsa_contrato.config(bg="white", highlightbackground="#cccccc", highlightcolor="#066dff")
 
-    # Si ambos campos obligatorios están vacíos, no hacer nada (entrada nula)
     if not any([texto_importe, oficina, contrato_num, nif]):
         return
 
@@ -1050,8 +1045,6 @@ def arrastrar_seleccion(event):
 
 # =============================================================================
 #  SECCIÓN 6 — GESTIÓN DE PESTAÑAS
-#  Reseteo del estado visual de cada pestaña al navegar entre ellas,
-#  garantizando que siempre se muestre el estado base al volver.
 # =============================================================================
 
 def resetear_pestana_monedas():
@@ -1101,8 +1094,6 @@ def evento_cambio_pestana(event):
 
 # =============================================================================
 #  SECCIÓN 7 — CONSTRUCCIÓN DE LA INTERFAZ
-#  Todo el código de creación de widgets está agrupado aquí, después de
-#  haber definido toda la lógica. El orden es:
 #    7a) Ventana principal
 #    7b) Registro de comandos de validación
 #    7c) Barra de totales inferior
@@ -1491,7 +1482,6 @@ btn_ver_enviadas.grid(row=2, column=0, pady=(5, 10))
 
 # =============================================================================
 #  SECCIÓN 8 — ARRANQUE
-#  Inicialización de la BD, carga de datos y entrada al bucle principal.
 # =============================================================================
 
 if __name__ == '__main__':
