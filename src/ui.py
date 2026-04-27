@@ -482,9 +482,7 @@ def auditar_celda_edicion(event, den):
         _limpiar_error_edicion(den)
     except ValueError:
         _marcar_error_edicion(den)
-        entradas_edicion[den].focus_set()
         entradas_edicion[den].select_range(0, 'end')
-        return "break"
 
 
 def alternar_modo_edicion():
