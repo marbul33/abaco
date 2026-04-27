@@ -46,7 +46,7 @@ El sistema ha sido diseñado bajo principios de **bajo acoplamiento** y **alta c
 
 ```bash
 # Clonar y ejecutar (Sin dependencias externas)
-git clone [https://github.com/marbul33/abaco.git](https://github.com/marbul33/abaco.git)
+git clone https://github.com/marbul33/abaco.git
 cd abaco
 python src/ui.py
 ```
