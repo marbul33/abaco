@@ -1115,8 +1115,7 @@ ventana.title("Abaco")
 ventana.configure(bg="#f0f0f0")
 ventana.resizable(False, False)
 # <inciso> ruta relativa para logo.png
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-ruta_logo = os.path.join(BASE_DIR, '..', 'img', 'logo.png')
+ruta_logo = ruta_recurso('img/logo.png')
 icono = tk.PhotoImage(file=ruta_logo)
 # </inciso>
 ventana.iconphoto(True, icono)
