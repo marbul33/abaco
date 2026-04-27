@@ -51,7 +51,11 @@ def ruta_recurso(relativa):
     """
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relativa)
-    return os.path.join(os.path.dirname(os.path.abspath(__file__)), relativa)
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    if os.path.basename(base_path) == 'src':
+        base_path = os.path.dirname(base_path)
+        
+    return os.path.join(base_path, relativa)
 
 
 def formatear_euro(valor):
